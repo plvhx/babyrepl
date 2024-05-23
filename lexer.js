@@ -9,26 +9,29 @@ function Lexer(buf) {
 
 Lexer.prototype.lex = function() {
     while (!this.isEOF()) {
-        switch (this.current()) {
-            case '+':
-                this.processPlus()
-                break
-            case '-':
-                this.processDash()
-                break
-            case '*':
-                this.processStar()
-                break
-            case '/':
-                this.processSlash()
-                break
-            default:
-                if (this.isDigit(null))
-                    this.processDigit()
-                break
-        }
-
+        this.lexOnce()
         this.incPos()
+    }
+}
+
+Lexer.prototype.lexOnce = function() {
+    switch (this.current()) {
+        case '+':
+            this.processPlus()
+            break
+        case '-':
+            this.processDash()
+            break
+        case '*':
+            this.processStar()
+            break
+        case '/':
+            this.processSlash()
+            break
+        default:
+            if (this.isDigit(null))
+                this.processDigit()
+            break
     }
 }
 
@@ -69,7 +72,10 @@ Lexer.prototype.addToken = function(token) {
 }
 
 Lexer.prototype.isDigit = function(buf) {
-    let inp = buf === null ? this.current() : (buf === undefined ? '' : buf)
+    let inp = buf === null
+        ? this.current()
+        : (buf === undefined ? '' : buf)
+
     return /^\d+$/.test(inp)
 }
 

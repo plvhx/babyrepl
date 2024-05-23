@@ -1,12 +1,20 @@
-const Eval = require('./eval')
-const Lexer = require('./lexer')
-const Parser = require('./parser')
+const eval = require('./wrapper')
+const psync = require('prompt-sync')()
 
-const lexer = new Lexer('20 / 9 + 5 * 8')
-lexer.lex()
+function repl() {
+    while (true) {
+        try {
+            let buf = psync('>> ')
 
-const parser = new Parser(lexer.getTokens())
-parser.parse()
+            if (buf === '.q' ||
+                buf === '.quit')
+                return
 
-const eval = new Eval(parser.ast())
-console.log(eval.eval())
+            console.log(eval(buf))
+        } catch (e) {
+            console.log(e.message)
+        }
+    }
+}
+
+module.exports = repl
